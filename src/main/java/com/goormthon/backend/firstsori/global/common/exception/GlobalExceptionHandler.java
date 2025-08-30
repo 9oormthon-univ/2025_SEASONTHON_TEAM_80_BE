@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.fromMessage(e.getMessage());
 
         /// 해당 예외 코드로 예외 처리
-        CustomException exception = new CustomException(errorCode.getHttpStatus(), errorCode.getCode(), errorCode.getMessage());
+        CustomException exception = new CustomException(errorCode);
 
         return handleCustomException(exception);
     }
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.fromMessage(e.getMessage());
 
         /// 해당 예외 코드로 예외 처리
-        CustomException exception = new CustomException(errorCode.getHttpStatus(), errorCode.getCode(), errorCode.getMessage());
+        CustomException exception = new CustomException(errorCode);
 
         return handleCustomException(exception);
     }
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
 
         /// 해당 예외 코드로 예외 처리
-        CustomException exception = new CustomException(errorCode.getHttpStatus(), errorCode.getCode(), errorCode.getMessage());
+        CustomException exception = new CustomException(errorCode);
 
         return handleCustomException(exception);
     }

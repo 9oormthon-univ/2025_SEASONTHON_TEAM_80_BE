@@ -3,9 +3,6 @@ package com.goormthon.backend.firstsori.global.common.response;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 /**
  * 응답을 하는 커스텀 예외 클래스입니다.
@@ -14,13 +11,9 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
 
-    private final HttpStatus httpStatus;
-
-    private final int errorCode;
-
-    private final String errorMessage;
+    private final ErrorCode errorCode;
 
 }
 

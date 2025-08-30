@@ -42,6 +42,6 @@ public record ApiResponse<T>(
 
     // 실패 응답 생성
     public static <T> ApiResponse<T> fail(final CustomException e) {
-        return new ApiResponse<>(e.getHttpStatus(), false, e.getErrorCode(), e.getErrorMessage(), null);
+        return new ApiResponse<>(e.getErrorCode().getHttpStatus(), false, e.getErrorCode().getCode(), e.getErrorCode().getMessage(), null);
     }
 }
