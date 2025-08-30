@@ -1,32 +1,37 @@
 name: Synchronize to forked repo
+
 on:
   push:
     branches:
       - develop
+      - 'setting/**'
+      - 'feat/**'
+  pull_request:
+    branches:
+      - develop
+      - 'setting/**'
+      - 'feat/**'
 
 jobs:
   sync:
-    name: Sync forked repo
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout develop
+      - name: Checkout branch
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.AUTO_ACTIONS }}
           fetch-depth: 0
-          ref: develop
+          ref: ${{ github.ref_name }}
 
-      - name: Add remote-url
+      - name: Add fork remote
         run: |
           git remote add forked-repo https://hyyeeon:${{ secrets.AUTO_ACTIONS }}@github.com/hyyeeon/2025_SEASONTHON_TEAM_80_BE.git
           git config user.name hyyeeon
           git config user.email ${{ secrets.EMAIL }}
 
-      - name: Push changes to forked-repo
+      - name: Push branch to fork
         run: |
-          git push -f forked-repo develop
+          git push -f forked-repo ${{ github.ref_name }}
 
       - name: Clean up
-        run: |
-          git remote remove forked-repo
+        run: git remote remove forked-repo
