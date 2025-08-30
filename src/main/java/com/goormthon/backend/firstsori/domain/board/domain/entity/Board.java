@@ -1,0 +1,32 @@
+ package com.goormthon.backend.firstsori.domain.board.domain.entity;
+
+import com.goormthon.backend.firstsori.domain.message.domain.entity.Message;
+import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
+import com.goormthon.backend.firstsori.global.common.entity.BaseTimeEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+ @Entity
+ @Getter
+ @NoArgsConstructor(access = AccessLevel.PROTECTED)
+ @Table(name = "boards")
+ @AllArgsConstructor
+ @Builder
+ public class Board extends BaseTimeEntity {
+
+     @Id
+     @GeneratedValue(generator = "UUID")
+     @Column(name = "board_id", nullable = false)
+     private UUID boardId;
+
+     @OneToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "user_id", nullable = false, unique = true)
+     private User user;
+
+     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<Message> messages = new ArrayList<>();
+ }
