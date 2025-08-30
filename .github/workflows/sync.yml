@@ -1,22 +1,17 @@
-name: Synchronize to forked repo
+name: Sync branches to forked repo
 
 on:
   push:
     branches:
       - develop
-      - 'setting/**'
       - 'feat/**'
-  pull_request:
-    branches:
-      - develop
       - 'setting/**'
-      - 'feat/**'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
+      - name: Checkout current branch
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.AUTO_ACTIONS }}
