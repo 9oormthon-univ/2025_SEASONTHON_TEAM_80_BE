@@ -3,6 +3,7 @@ package com.goormthon.backend.firstsori.global.common.response;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -15,10 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomException extends RuntimeException{
 
-    private final ErrorCode errorCode;
+    private final HttpStatus httpStatus;
 
-    private final List<FieldErrorResponse> fieldErrorResponses;
+    private final int errorCode;
 
+    private final String errorMessage;
 
 }
 
