@@ -34,9 +34,9 @@ dependencies {
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql:42.7.3'
+    runtimeOnly 'com.h2database:h2'
 
     // 시큐리티
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -57,6 +57,10 @@ dependencies {
 
     // data-binding
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // logging
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
 }
 
