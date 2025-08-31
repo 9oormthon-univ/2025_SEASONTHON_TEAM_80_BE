@@ -1,0 +1,42 @@
+name: CI Pipeline (Fork-safe)
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - 'feat/**'
+      - 'setting/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == true
+    steps:
+      # Fork PR/feature 브랜치에서도 token 없이 checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Give execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      # main/develop 브랜치에서만 Docker 빌드 & Hub push
+      - name: Build & Push Docker image
+        if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USER_NAME }}/firstsori-dev
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
+          docker build -t $IMAGE_NAME:latest -f ./Dockerfile .
+          docker push $IMAGE_NAME:latest
