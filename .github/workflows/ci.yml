@@ -31,19 +31,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: 파일 생성
-        run:
-          # application.yml 파일 생성
-          echo "${{ secrets.APPLICATION_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources/application.yml
-          
-          # docker-compose.yml 파일 생성
-          cat <<EOF > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/docker-compose.yml
-          ${{ secrets.DOCKER_COMPOSE_YML }}
-          EOF
-          
-          # .env 파일 생성
-          echo "${{ secrets.ENV }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/.env
-
       # main/develop 브랜치에서만 Docker 빌드 & Hub push
       - name: Build & Push Docker image
         #if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
