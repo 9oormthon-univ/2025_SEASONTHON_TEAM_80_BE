@@ -30,6 +30,9 @@ jobs:
             ${{ secrets.DOCKER_COMPOSE_YML }}
             EOF
             
+            # .env 파일 생성
+            echo "${{ secrets.ENV }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/.env
+            
             # 프로젝트 디렉토리로 이동
             cd /home/ubuntu/2025_SEASONTHON_TEAM_80_BE
             
