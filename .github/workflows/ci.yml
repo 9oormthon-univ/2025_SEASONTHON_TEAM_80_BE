@@ -33,7 +33,7 @@ jobs:
 
       # main/develop 브랜치에서만 Docker 빌드 & Hub push
       - name: Build & Push Docker image
-        #if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
+        if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_USER_NAME }}/firstsori-dev
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
