@@ -1,0 +1,46 @@
+name: CD Pipeline (Dev)
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline (Fork-safe)"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == true
+    steps:
+      - name: Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources
+            
+            # application.yml 추가
+            cat <<'EOF' > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources/application.yml
+            ${{ secrets.APPLICATION_YML }}
+            EOF
+
+            # docker-compose.yml 추가
+            cat <<'EOF' > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/docker-compose.yml
+            ${{ secrets.DOCKER_COMPOSE_YML }}
+            EOF
+
+            # .env 추가
+            cat <<'EOF' > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/.env
+            ${{ secrets.ENV }}
+            EOF
+
+            cd /home/ubuntu/2025_SEASONTHON_TEAM_80_BE
+
+            echo "===== Docker Hub 로그인 ====="
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
+
+            echo "===== 이미지 최신화 및 컨테이너 실행 ====="
+            sudo docker compose pull
+            sudo docker compose up -d --force-recreate
