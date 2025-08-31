@@ -1,10 +1,8 @@
 name: CD Pipeline (Dev)
 
 on:
-  workflow_run:
-    workflows: ["CI Pipeline (Fork-safe)"]  # CI 워크플로 이름
-    types:
-      - completed
+  repository_dispatch:
+    types: [trigger-cd]
 
 jobs:
   deploy:
