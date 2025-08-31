@@ -1,6 +1,7 @@
 package com.goormthon.backend.firstsori.domain.user.domain.entity;
 
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
+import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Provider;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Role;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Status;
 import com.goormthon.backend.firstsori.global.common.entity.BaseTimeEntity;
@@ -42,6 +43,13 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Provider provider;
+
+    @Column(nullable = false)
+    private String socialId;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Board board;
