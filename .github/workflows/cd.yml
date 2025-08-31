@@ -1,12 +1,15 @@
 name: CD Pipeline (Dev)
 
 on:
-  repository_dispatch:
-    types: [trigger-cd]
+  workflow_run:
+    workflows: ["CI Pipeline (Fork-safe)"]  # CI 워크플로 이름
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3

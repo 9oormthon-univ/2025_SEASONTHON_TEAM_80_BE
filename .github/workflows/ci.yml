@@ -33,18 +33,9 @@ jobs:
 
       # main/develop 브랜치에서만 Docker 빌드 & Hub push
       - name: Build & Push Docker image
-        # if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
+        if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_USER_NAME }}/firstsori-dev
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
           docker build -t $IMAGE_NAME:latest -f ./Dockerfile .
           docker push $IMAGE_NAME:latest
-
-
-      - name: Trigger CD workflow
-        run: |
-          curl -i -X POST \
-            -H "Authorization: token ${{ secrets.AUTO_ACTIONS }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/hyyeeon/2025_SEASONTHON_TEAM_80_BE/dispatches \
-            -d '{"event_type":"trigger-cd"}'
