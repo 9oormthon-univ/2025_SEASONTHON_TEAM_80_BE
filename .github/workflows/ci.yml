@@ -41,10 +41,9 @@ jobs:
           docker push $IMAGE_NAME:latest
 
       - name: Trigger CD workflow
-        if: ${{ success() }}
         run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -i -X POST \
+            -H "Authorization: token ${{ secrets.AUTO_ACTIONS }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/hyyeeon/2025_SEASONTHON_TEAM_80_BE/dispatches \
             -d '{"event_type":"trigger-cd"}'
