@@ -46,7 +46,7 @@ public class RequestMatcherHolder {
             new RequestInfo(GET, "/swagger-ui/**", null),
             new RequestInfo(GET, "/swagger-resources/**", null),
             new RequestInfo(GET, "/webjars/**", null),
-            new RequestInfo(GET, "/swagger-ui.html", null),
+            new RequestInfo(GET, "/swagger-ui.html", null)
 
     );
 

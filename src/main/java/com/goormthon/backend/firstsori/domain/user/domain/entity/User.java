@@ -46,4 +46,9 @@ public class User extends BaseTimeEntity {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Board board;
 
+    public void update(String name, String email, String profileImage) {
+        if (name != null) this.name = name;
+        if (email != null) this.email = email;
+        if (profileImage != null) this.profileImage = profileImage;
+    }
 }
