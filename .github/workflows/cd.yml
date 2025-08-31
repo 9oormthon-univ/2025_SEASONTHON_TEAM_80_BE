@@ -19,24 +19,17 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            # 서버 안에서 디렉토리 생성
             mkdir -p /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources
 
-            # docker-compose.yml 안전하게 생성
-            printf '%s\n' "${{ secrets.DOCKER_COMPOSE_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/docker-compose.yml
-  
-            # application.yml
             printf '%s\n' "${{ secrets.APPLICATION_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources/application.yml
-  
-            # .env
+            printf '%s\n' "${{ secrets.DOCKER_COMPOSE_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/docker-compose.yml
             printf '%s\n' "${{ secrets.ENV }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/.env
-  
-  
-            # 프로젝트 디렉토리로 이동
+
             cd /home/ubuntu/2025_SEASONTHON_TEAM_80_BE
-            
+
             echo "===== Docker Hub 로그인 ====="
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
+
             echo "===== 이미지 최신화 및 컨테이너 실행 ====="
             sudo docker compose pull
             sudo docker compose up -d --force-recreate
