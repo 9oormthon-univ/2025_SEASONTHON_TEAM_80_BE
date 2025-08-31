@@ -11,6 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # CI가 돌았던 브랜치/커밋 그대로 가져오기
+      - name: Checkout CI branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      # 또는 더 확실히 커밋 단위로 가져오고 싶으면 head_sha 사용
+      # with:
+      #   ref: ${{ github.event.workflow_run.head_sha }}
+
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -19,17 +29,10 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            mkdir -p /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources
-
-            printf '%s\n' "${{ secrets.APPLICATION_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/src/main/resources/application.yml
-            printf '%s\n' "${{ secrets.DOCKER_COMPOSE_YML }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/docker-compose.yml
-            printf '%s\n' "${{ secrets.ENV }}" > /home/ubuntu/2025_SEASONTHON_TEAM_80_BE/.env
-
+            # 서버 배포 로직 (docker-compose 등)
             cd /home/ubuntu/2025_SEASONTHON_TEAM_80_BE
-
             echo "===== Docker Hub 로그인 ====="
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
-
             echo "===== 이미지 최신화 및 컨테이너 실행 ====="
             sudo docker compose pull
             sudo docker compose up -d --force-recreate
