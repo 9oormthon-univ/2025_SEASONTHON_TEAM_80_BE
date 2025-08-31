@@ -1,6 +1,5 @@
 name: Sync branches to forked repo
 
-
 on:
   push:
     branches:

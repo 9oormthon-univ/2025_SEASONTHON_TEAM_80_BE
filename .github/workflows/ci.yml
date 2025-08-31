@@ -32,7 +32,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      # main/develop 브랜치에서만 Docker 빌드 & Hub push
+      # main/develop 브랜치에서만 Docker 빌드 & 허브 push
       - name: Build & Push Docker image
         if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
         run: |
