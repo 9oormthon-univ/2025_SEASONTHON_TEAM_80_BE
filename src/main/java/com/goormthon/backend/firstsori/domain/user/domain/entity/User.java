@@ -22,7 +22,7 @@ import java.util.UUID;
 public class User extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
