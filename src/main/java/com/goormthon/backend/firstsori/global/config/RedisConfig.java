@@ -23,6 +23,8 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
     // LettuceConnectionFactory 빈을 생성합니다. 이 팩토리는 Redis 서버와의 연결을 관리합니다.
+    // 현재 세팅 시 lettuce로 구현 시 에러 발생해 현재는 jedis로 구현
+    // 추후 다시 lettuce 기반으로 리팩터링 예정으로 lettuce 부분은 주석처리해놓았습니다.
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -44,9 +46,9 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
+        template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
 
