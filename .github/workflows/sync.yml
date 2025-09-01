@@ -1,9 +1,9 @@
 name: Sync branches to forked repo
 
-
 on:
   push:
     branches:
+      - main
       - develop
       - 'feat/**'
       - 'setting/**'
@@ -11,6 +11,7 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v4
