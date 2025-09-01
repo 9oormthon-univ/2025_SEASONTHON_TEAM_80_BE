@@ -1,6 +1,7 @@
 package com.goormthon.backend.firstsori.domain.user.domain.entity;
 
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
+import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Provider;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Role;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Status;
 import com.goormthon.backend.firstsori.global.common.entity.BaseTimeEntity;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class User extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
@@ -43,7 +44,19 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Provider provider;
+
+    @Column(nullable = false)
+    private String socialId;
+
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Board board;
 
+    public void update(String name, String email, String profileImage) {
+        if (name != null) this.name = name;
+        if (email != null) this.email = email;
+        if (profileImage != null) this.profileImage = profileImage;
+    }
 }
