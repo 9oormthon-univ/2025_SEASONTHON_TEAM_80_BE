@@ -46,7 +46,7 @@ public enum ErrorCode {
         REFRESH_TOKEN_MISMATCH(401_009, HttpStatus.UNAUTHORIZED, "저장된 리프레시 토큰과 일치하지 않습니다."),
         EXPIRED_REFRESH_TOKEN(401_010, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 만료되었습니다."),
         TOKEN_NOT_FOUND_COOKIE(401_011, HttpStatus.UNAUTHORIZED, "쿠키에 리프레시 토큰이 존재하지 않습니다."),
-
+        MISSING_USER_ID_IN_TOKEN(401_012, HttpStatus.UNAUTHORIZED, "토큰에서 사용자 정보를 찾을 수 없습니다."),
 
         // ========================
         // 403 Forbidden
