@@ -27,7 +27,7 @@ public class UserAdapter implements UserPort {
     public void updateUser(User user) {
 
         /// 조회
-        var entity = userRepository.findById(user.getUserId())
+        var entity = userRepository.findByUserId(user.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
         /// 수정사항 db에 반영
@@ -41,7 +41,7 @@ public class UserAdapter implements UserPort {
 
     @Override
     public Optional<User> loadUserById(UUID userId) {
-        return userRepository.findById(userId);
+        return userRepository.findByUserId(userId);
     }
 
     @Override
