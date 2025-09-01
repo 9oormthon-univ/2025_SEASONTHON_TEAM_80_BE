@@ -32,7 +32,7 @@ public class Music {
     private String songUrl;
 
     @Column(nullable = true)
-    private String imageUrl; // S3 이미지 URL
+    private String albumImageUrl;
 
 
 }
