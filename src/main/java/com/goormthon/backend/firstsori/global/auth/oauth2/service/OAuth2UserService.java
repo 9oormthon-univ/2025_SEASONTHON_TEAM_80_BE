@@ -73,6 +73,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     .profileImage(userInfo.getImageUrl())
                     .role(Role.USER)
                     .status(Status.ACTIVE)
+                    .provider(social)
+                    .socialId(userInfo.getProviderId())
                     .build();
 
             User savedNewUser = userPort.saveUser(user);
