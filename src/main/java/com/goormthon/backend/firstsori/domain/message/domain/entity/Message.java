@@ -1,6 +1,7 @@
 package com.goormthon.backend.firstsori.domain.message.domain.entity;
 
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
+import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
 import com.goormthon.backend.firstsori.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,13 +30,23 @@ public class Message extends BaseTimeEntity {
     private Board board;
 
     @Column(nullable = false)
-    private String nickName;
+    private String senderName;
 
     @Column(nullable = false)
-    private String message;
+    private String content;
 
     @Column(nullable = false)
     private Boolean read = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "music_id", nullable = false)
+    private Music music;
+
+    @Column(nullable = true)
+    private String customImageUrl;  // S3 이미지 URL
+
+    public void setRead() {
+        this.read = true;
+    }
 
 }

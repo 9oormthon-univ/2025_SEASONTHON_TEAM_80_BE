@@ -61,7 +61,9 @@ public enum ErrorCode {
         NOT_FOUND_END_POINT(404_000, HttpStatus.NOT_FOUND, "요청한 대상이 존재하지 않습니다."),
         USER_NOT_FOUND(404_001, HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
         USER_NOT_FOUND_IN_COOKIE(404_002, HttpStatus.NOT_FOUND, "쿠키에서 사용자 정보를 찾을 수 없습니다."),
-
+        MESSAGE_NOT_FOUND(400_003, HttpStatus.NOT_FOUND, "메시지를 찾을 수 없습니다."),
+        BOARD_NOT_FOUND(400_004, HttpStatus.NOT_FOUND, "유저의 보드를 찾을 수 없습니다."),
+                
         // ========================
         // 409 Conflict
         // ========================
