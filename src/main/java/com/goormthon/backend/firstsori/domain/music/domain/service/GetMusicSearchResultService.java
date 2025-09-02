@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goormthon.backend.firstsori.domain.music.application.dto.response.SongData;
+import com.goormthon.backend.firstsori.domain.music.application.mapper.SongDataMapper;
 import com.goormthon.backend.firstsori.global.common.response.CustomException;
 import com.goormthon.backend.firstsori.global.spotify.application.dto.response.SpotifySearchApiResponse;
 import com.goormthon.backend.firstsori.global.spotify.domain.client.SpotifyApiClient;
@@ -27,21 +28,19 @@ import static com.goormthon.backend.firstsori.global.common.exception.ErrorCode.
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class MusicService {
+public class GetMusicSearchResultService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final SpotifyApiClient spotifyApiClient;
 
     private static final int POPULAR_THRESHOLD = 10;
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    /*    private static final String PREFIX = "spotify:search:";
-        private static final String SEARCH_PREFIX = "spotify:search:";
-        private static final String TRACK_PREFIX = "spotify:track:";
-        private static final String COUNT_PREFIX = "spotify:search:count:";*/
 
     /**
+     *  키워드로 spotify 검색 및 캐싱 작업 메서드
+     *
      *  키워드 검색횟수 TTL (countKey) :  7일
-     *  키워드 검색결과  TTL (searchKey) : 기본 1시간 캐싱
+     *  키워드 검색결과 TTL (searchKey) : 기본 1시간 캐싱
      *  10회 이상 검색된 키워드의 검색결과 TTL (trackKey) : 24시간
     */
     public List<SongData> getSearchResult(String keyword) {
@@ -85,16 +84,7 @@ public class MusicService {
     // Response 내 Item을 SongData로 변환
     private Function<SpotifySearchApiResponse.Item, SongData> mapToSongData() {
         return item -> {
-            SongData songMetaData = new SongData(
-                    item.getId(),
-                    item.getName(),
-                    item.getArtists().stream()
-                            .map(SpotifySearchApiResponse.Artist::getName)
-                            .collect(Collectors.joining(", ")),
-                    item.getAlbum().getImages().get(0).getUrl(),
-                    item.getExternal_urls().getSpotify(),
-                    item.getPreview_url()
-            );
+            SongData songMetaData = SongDataMapper.toSongData(item);
 
             // 곡 단위 캐싱
             cacheTrack(item, songMetaData);
@@ -138,7 +128,6 @@ public class MusicService {
         SpotifySearchApiResponse response;
         try {
             response = spotifyApiClient.searchMusicRaw(keyword);
-            log.error(response.toString());
         } catch (Exception e) {
             throw new CustomException(SPOTIFY_API_CALL_FAILED);
         }
