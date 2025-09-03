@@ -1,8 +1,11 @@
 package com.goormthon.backend.firstsori.domain.message.application.mapper;
 
+import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
+import com.goormthon.backend.firstsori.domain.message.application.dto.request.SaveMessageRequest;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
 import com.goormthon.backend.firstsori.domain.message.domain.entity.Message;
+import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,5 +67,19 @@ public class MessageMapper {
                 .build();
     }
 
+    public static Message toMessageEntity(SaveMessageRequest request,Board board,Music music)
+    {
+        if (request == null) {
+            return null;
+        }
+        return Message.builder()
+                .board(board)
+                .senderName(request.senderName())
+                .content(request.content())
+                .music(music)
+                .read(false)
+                .customImageUrl(null)
+                .build();
+    }
 
 }
