@@ -29,4 +29,22 @@ import java.util.UUID;
 
      @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
      private List<Message> messages = new ArrayList<>();
+
+    @Column(nullable = false)
+    private int messageCount = 0;
+
+    @Column(nullable = false)
+    private String sharedId;
+
+    public void incrementMessageCount(int redisCount) {
+         this.messageCount += redisCount;
+     }
+
+    public void decrementMessageCount() {
+         if (this.messageCount > 0) {
+             this.messageCount--;
+         }
+     }
+
+
  }

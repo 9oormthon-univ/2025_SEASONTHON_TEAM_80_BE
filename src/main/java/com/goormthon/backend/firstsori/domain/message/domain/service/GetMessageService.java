@@ -10,17 +10,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GetMessageService {
 
     private final MessageRepository messageRepository;
 
-    @Transactional
+
     public Message getMessage(UUID messageId) {
         messageRepository.markReadIfUnread(messageId);
         // 수정됐든 안됐든 메시지 조회 (1번 쿼리)
@@ -30,7 +29,6 @@ public class GetMessageService {
 
 
     public Page<Message> getMessageList(UUID userId, Pageable pageable) {
-
         Page<Message> messages = messageRepository.findAllByUserId(userId, pageable);
         if (messages.isEmpty()) {
             throw new CustomException(ErrorCode.MESSAGE_NOT_FOUND);
