@@ -29,4 +29,10 @@ import java.util.UUID;
 
      @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
      private List<Message> messages = new ArrayList<>();
+
+     @Column(name="nickname", nullable = false)
+     private String nickname;
+
+     @Column(name = "share_uri", nullable = false, unique = true, length = 12)
+     private String shareUri;
  }
