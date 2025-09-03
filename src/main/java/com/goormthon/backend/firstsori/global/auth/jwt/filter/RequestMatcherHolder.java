@@ -34,6 +34,9 @@ public class RequestMatcherHolder {
             new RequestInfo(POST, "/api/v1/auth/reissue", null),
             new RequestInfo(POST, "/api/v1/auth/logout", Role.USER),
 
+            // 메세지 전송
+            new RequestInfo(POST, "/api/v1/message", null),
+
             // static resources
             new RequestInfo(GET, "/docs/**", null),
             new RequestInfo(GET, "/*.ico", null),
