@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'redis.clients:jedis'
     implementation 'org.postgresql:postgresql:42.7.3'
-    runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2'
 
     // 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
