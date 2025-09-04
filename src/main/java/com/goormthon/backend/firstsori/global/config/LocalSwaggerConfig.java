@@ -1,5 +1,7 @@
 package com.goormthon.backend.firstsori.global.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 import java.util.TreeMap;
 
+@OpenAPIDefinition(
+        servers = @Server(url = "https://api.firstsori.site")
+)
 @Configuration
 public class LocalSwaggerConfig {
 
