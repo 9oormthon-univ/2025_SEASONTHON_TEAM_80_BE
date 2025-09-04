@@ -12,8 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class SaveMusicService {
 
     private final MusicRepository musicRepository;
+    private final MusicEventProducer musicEventProducer;
 
     public void saveMusic(Music music) {
-        musicRepository.save(music);
+        // DB에 음악 저장
+        Music savedMusic = musicRepository.save(music);
+        // 인기 차트 이벤트 발행
+        musicEventProducer.publishMusicEvent(savedMusic.getSongName());
     }
 }
