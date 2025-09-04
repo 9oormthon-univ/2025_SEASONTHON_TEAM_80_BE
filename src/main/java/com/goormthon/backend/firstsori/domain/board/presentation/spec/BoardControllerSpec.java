@@ -132,5 +132,38 @@ public interface BoardControllerSpec {
 
             );
 
+    @Operation(
+            summary = "외부 사용자 보드 메세지 조회",
+            description = "공유 URI를 통해 외부 사용자가 접근할 때, 해당 보드의 전체 메세지 앨범 커버 정보를 조회합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                                            implementation = com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse.class
+                                    )
+                            )
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "공유 URI에 해당하는 보드를 찾을 수 없음"
+            )
+    })
+    @GetMapping("/shared/{shareUri}")
+    com.goormthon.backend.firstsori.global.common.response.ApiResponse<
+            java.util.List<com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse>
+            > getBoardMessages(
+            @Parameter(
+                    description = "공유 URI",
+                    example = "a1b2c3d4e5f6"
+            )
+            @PathVariable String shareUri
+    );
+
 
 }
