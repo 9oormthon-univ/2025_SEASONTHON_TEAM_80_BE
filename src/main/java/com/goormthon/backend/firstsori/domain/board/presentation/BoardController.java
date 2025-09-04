@@ -1,5 +1,6 @@
 package com.goormthon.backend.firstsori.domain.board.presentation;
 
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
@@ -8,7 +9,6 @@ import com.goormthon.backend.firstsori.domain.board.presentation.spec.BoardContr
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
 import com.goormthon.backend.firstsori.domain.message.application.usecase.MessageUseCase;
-import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
@@ -37,9 +37,9 @@ public class BoardController implements BoardControllerSpec {
     // 전체 메세지 리스트 정보 조회
     @GetMapping
     public ApiResponse<PageResponse<MessageListResponse>> getMessages(
-            @RequestParam UUID userId,
+            @AuthenticationPrincipal PrincipalDetails user,
             Pageable pageable) {
-        PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(userId, pageable);
+        PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(user.getId(), pageable);
         return ApiResponse.ok(messageListResponses);
     }
 
@@ -47,18 +47,18 @@ public class BoardController implements BoardControllerSpec {
     @PostMapping("/create")
     public ApiResponse<CreateBoardResponse> createBoard(
             @RequestBody CreateBoardRequest request,
-            @RequestHeader(value = "Authorization", required = false) String authorization
+            @AuthenticationPrincipal PrincipalDetails user
     ) {
-        CreateBoardResponse response = boardUseCase.createBoard(request, authorization);
+        CreateBoardResponse response = boardUseCase.createBoard(request, user.getUser());
         return ApiResponse.ok(response);
     }
 
     // 보드 공유 URI 조회
     @GetMapping("/share")
     public ApiResponse<GetShareUriResponse> getShareUri(
-            @RequestHeader(value = "Authorization", required = false) String authorization
+            @AuthenticationPrincipal PrincipalDetails user
     ) {
-        GetShareUriResponse response = boardUseCase.getShareUriByUser(authorization);
+        GetShareUriResponse response = boardUseCase.getShareUriByUser(user.getUser());
         return ApiResponse.ok(response);
     }
 

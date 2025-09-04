@@ -3,12 +3,11 @@ package com.goormthon.backend.firstsori.domain.board.application.usecase;
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
-import com.goormthon.backend.firstsori.domain.board.application.dto.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
 import com.goormthon.backend.firstsori.domain.board.application.mapper.BoardMapper;
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
 import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
-import com.goormthon.backend.firstsori.domain.message.domain.service.GetMessageService;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenExtractor;
 import com.goormthon.backend.firstsori.domain.user.domain.service.GetUserService;
@@ -35,26 +34,19 @@ public class BoardUseCaseImpl implements BoardUseCase {
 
     @Transactional
     @Override
-    public CreateBoardResponse createBoard(CreateBoardRequest request, String bearerToken) {
+    public CreateBoardResponse createBoard(CreateBoardRequest request, User user) {
 
         String nickname = request.getNickname();
-        String token = extractTokenFromBearer(bearerToken);
 
         if (nickname == null || nickname.isBlank()) {
             throw new CustomException(ErrorCode.INVALID_INPUT);
         }
-        if (token == null || token.isBlank()) {
-            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+
+        Board existingBoard = boardRepository.findByUser(user).orElse(null);
+        if (existingBoard != null) {
+            // 이미 존재하면 기존 보드 반환
+            return new CreateBoardResponse(existingBoard.getBoardId(), user.getUserId(),existingBoard.getNickname(), existingBoard.getShareUri());
         }
-
-        if (!jwtTokenExtractor.validateToken(token)) {
-            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
-        }
-
-        UUID userId = UUID.fromString(jwtTokenExtractor.getId(token));
-        User user = userUseCase.findByUserId(userId);
-
-        boardRepository.findByUser(user).ifPresent(b -> { throw new CustomException(ErrorCode.BAD_REQUEST); });
 
         // 공유 URI 중복만 방지 (닉네임은 중복 허용)
         String shareUri = generateUniqueShareUri();
@@ -95,19 +87,7 @@ public class BoardUseCaseImpl implements BoardUseCase {
 
     @Transactional(readOnly = true)
     @Override
-    public GetShareUriResponse getShareUriByUser(String bearerToken) {
-        String token = extractTokenFromBearer(bearerToken);
-
-        if (token == null || token.isBlank()) {
-            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
-        }
-
-        if (!jwtTokenExtractor.validateToken(token)) {
-            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
-        }
-
-        UUID userId = UUID.fromString(jwtTokenExtractor.getId(token));
-        User user = userUseCase.findByUserId(userId);
+    public GetShareUriResponse getShareUriByUser(User user) {
 
         Board board = boardRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
