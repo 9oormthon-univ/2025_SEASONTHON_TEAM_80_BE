@@ -1,6 +1,8 @@
 package com.goormthon.backend.firstsori.domain.board.presentation;
 
-import com.goormthon.backend.firstsori.domain.board.application.dto.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
 import com.goormthon.backend.firstsori.domain.board.presentation.spec.BoardControllerSpec;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
@@ -35,10 +37,29 @@ public class BoardController implements BoardControllerSpec {
     // 전체 메세지 리스트 정보 조회
     @GetMapping
     public ApiResponse<PageResponse<MessageListResponse>> getMessages(
-            @AuthenticationPrincipal PrincipalDetails user,
+            @RequestParam UUID userId,
             Pageable pageable) {
-        PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(user.getId(), pageable);
+        PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(userId, pageable);
         return ApiResponse.ok(messageListResponses);
+    }
+
+    // 보드 생성
+    @PostMapping("/create")
+    public ApiResponse<CreateBoardResponse> createBoard(
+            @RequestBody CreateBoardRequest request,
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+        CreateBoardResponse response = boardUseCase.createBoard(request, authorization);
+        return ApiResponse.ok(response);
+    }
+
+    // 보드 공유 URI 조회
+    @GetMapping("/share")
+    public ApiResponse<GetShareUriResponse> getShareUri(
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+        GetShareUriResponse response = boardUseCase.getShareUriByUser(authorization);
+        return ApiResponse.ok(response);
     }
 
 
