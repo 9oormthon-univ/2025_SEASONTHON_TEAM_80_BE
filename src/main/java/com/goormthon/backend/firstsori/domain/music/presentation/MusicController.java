@@ -1,6 +1,7 @@
 package com.goormthon.backend.firstsori.domain.music.presentation;
 
 import com.goormthon.backend.firstsori.domain.music.application.dto.response.GetSearchResultResponse;
+import com.goormthon.backend.firstsori.domain.music.application.dto.response.MusicChartResponse;
 import com.goormthon.backend.firstsori.domain.music.application.usecase.MusicUseCase;
 import com.goormthon.backend.firstsori.domain.music.presentation.spec.MusicControllerSpec;
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/v1/music")
@@ -26,4 +29,12 @@ public class MusicController implements MusicControllerSpec {
         GetSearchResultResponse response = musicUseCase.getSearchResult(keyword);
         return ApiResponse.ok(response);
     }
+
+    // 음악 인기 차트
+    @GetMapping("/popular-chart")
+    public ApiResponse<List<MusicChartResponse>> getPopularMusic(@RequestParam(defaultValue = "10") int topN){
+        List<MusicChartResponse> responses= musicUseCase.getPopularMusic(topN);
+         return ApiResponse.ok(responses);
+    }
+
 }
