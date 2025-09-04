@@ -1,6 +1,6 @@
 package com.goormthon.backend.firstsori.domain.board.application.mapper;
 
-import com.goormthon.backend.firstsori.domain.board.application.dto.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
 
 public class BoardMapper {
 
