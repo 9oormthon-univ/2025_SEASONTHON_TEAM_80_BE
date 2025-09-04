@@ -62,7 +62,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
     @Override
     public void createMessage(SaveMessageRequest request) {
 
-        Board board = Optional.ofNullable(getBoardService.getBoardBySharedId(request.sharedId()))
+        Board board = Optional.ofNullable(getBoardService.getBoardBySharedId(request.shareUri()))
                     .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         // 음악 정보 엔티티 생성

@@ -39,9 +39,6 @@ import java.util.UUID;
     @Column(nullable = false)
     private int messageCount = 0;
 
-    @Column(nullable = false)
-    private String sharedId;
-
     public void incrementMessageCount(int redisCount) {
          this.messageCount += redisCount;
      }

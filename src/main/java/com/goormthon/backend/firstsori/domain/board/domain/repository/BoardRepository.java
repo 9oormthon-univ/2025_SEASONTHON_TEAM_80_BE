@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, UUID> {
-    Optional<Board> findBySharedId(String sharedId);
+
+    Optional<Board> findByShareUri(String shareUri);
 
     Optional<Board> findByUser(User user);
 
