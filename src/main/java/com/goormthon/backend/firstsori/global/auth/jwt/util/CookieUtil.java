@@ -65,6 +65,7 @@ public class CookieUtil {
     // 공통 쿠키 저장 메서드
     private void setCookie(HttpServletResponse response, String cookieName, String tokenValue, long maxAge) {
         ResponseCookie cookie = ResponseCookie.from(cookieName, tokenValue)
+                .domain(".firstsori.site") // 하위 서브도메인 포함
                 .maxAge(maxAge)
                 .path(cookiePathOption)
                 .httpOnly(true)
