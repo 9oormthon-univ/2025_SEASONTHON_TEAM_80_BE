@@ -1,15 +1,18 @@
 package com.goormthon.backend.firstsori.domain.message.application.usecase;
 
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
-import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
+import com.goormthon.backend.firstsori.domain.board.domain.service.GetBoardService;
+import com.goormthon.backend.firstsori.domain.message.application.dto.request.SaveMessageRequest;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
 import com.goormthon.backend.firstsori.domain.message.application.mapper.MessageMapper;
 import com.goormthon.backend.firstsori.domain.message.domain.entity.Message;
-import com.goormthon.backend.firstsori.domain.message.domain.repository.MessageRepository;
 import com.goormthon.backend.firstsori.domain.message.domain.service.GetMessageService;
+import com.goormthon.backend.firstsori.domain.message.domain.service.SaveMessageService;
+import com.goormthon.backend.firstsori.domain.music.application.mapper.MusicMapper;
+import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
+import com.goormthon.backend.firstsori.domain.music.domain.service.SaveMusicService;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
-import com.goormthon.backend.firstsori.domain.user.domain.repository.UserRepository;
 import com.goormthon.backend.firstsori.domain.user.domain.service.GetUserService;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
 import com.goormthon.backend.firstsori.global.common.response.CustomException;
@@ -18,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +35,10 @@ public class MessageUseCaseImpl implements MessageUseCase {
 
     private final GetMessageService getMessageService;
     private final GetUserService getUserService;
-
+    private final SaveMessageService saveMessageService;
+    private final GetBoardService getBoardService;
+    private final SaveMusicService saveMusicService;
+    private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
 
     @Override
     public MessageResponse getMessage(UUID messageId) {
@@ -51,4 +58,24 @@ public class MessageUseCaseImpl implements MessageUseCase {
         Page<Message> messages = getMessageService.getMessageList(userId,pageable);
         return MessageMapper.toMessageListResponse(messages);
     }
+
+    @Override
+    public void createMessage(SaveMessageRequest request) {
+
+        Board board = Optional.ofNullable(getBoardService.getBoardBySharedId(request.shareUri()))
+                    .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        // 음악 정보 엔티티 생성
+        Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.albumImageUrl(), request.songUrl());
+        saveMusicService.saveMusic(music);
+
+        // 메시지 엔티티 생성
+        Message message = MessageMapper.toMessageEntity(request, board, music);
+        saveMessageService.saveMessage(message);
+
+        // 보드의 메시지 카운트를 Redis에서 증가
+        String redisKey = "board:messageCount:" + board.getBoardId().toString();
+        redisTemplate.opsForValue().increment(redisKey);
+    }
+
 }

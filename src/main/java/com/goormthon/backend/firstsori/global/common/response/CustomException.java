@@ -10,10 +10,13 @@ import lombok.RequiredArgsConstructor;
  */
 
 @Getter
-@RequiredArgsConstructor
 public class CustomException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
+    public CustomException(ErrorCode errorCode) {
+        super(errorCode.getMessage()); // 부모 RuntimeException에 메시지 세팅
+        this.errorCode = errorCode;
+    }
 }
 
