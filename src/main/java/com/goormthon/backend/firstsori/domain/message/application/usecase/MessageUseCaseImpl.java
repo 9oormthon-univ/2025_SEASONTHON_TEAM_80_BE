@@ -1,5 +1,6 @@
 package com.goormthon.backend.firstsori.domain.message.application.usecase;
 
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse;
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.service.GetBoardService;
 import com.goormthon.backend.firstsori.domain.message.application.dto.request.SaveMessageRequest;
@@ -25,6 +26,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Slf4j
@@ -76,6 +78,19 @@ public class MessageUseCaseImpl implements MessageUseCase {
         // 보드의 메시지 카운트를 Redis에서 증가
         String redisKey = "board:messageCount:" + board.getBoardId().toString();
         redisTemplate.opsForValue().increment(redisKey);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardPreviewResponse> getMessagesByBoardShareUri(String shareUri) {
+        Board board = getBoardService.getBoardBySharedId(shareUri); // Board 조회
+
+        return board.getMessages().stream()
+                .map(message -> BoardPreviewResponse.builder()
+                        .messageId(message.getMessageId())
+                        .musicId(message.getMusic().getMusicId())  // Music ID
+                        .musicCoverUrl(message.getMusic().getAlbumImageUrl())  // Music Cover
+                        .build())
+                .toList();
     }
 
 }

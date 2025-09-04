@@ -2,6 +2,7 @@ package com.goormthon.backend.firstsori.domain.board.presentation;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,6 +43,13 @@ public class BoardController implements BoardControllerSpec {
             Pageable pageable) {
         PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(user.getId(), pageable);
         return ApiResponse.ok(messageListResponses);
+    }
+
+    // 외부인 접속 시 전체 메세지 앨범 커버만 조회
+    @GetMapping("/shared/{shareUri}")
+    public ApiResponse<List<BoardPreviewResponse>> getBoardMessages(@PathVariable String shareUri) {
+        List<BoardPreviewResponse> response = messageUseCase.getMessagesByBoardShareUri(shareUri);
+        return ApiResponse.ok(response);
     }
 
     // 보드 생성
