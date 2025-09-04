@@ -1,16 +1,19 @@
 package com.goormthon.backend.firstsori.domain.board.presentation.spec;
 
+import com.goormthon.backend.firstsori.domain.board.application.dto.BoardInfoResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
+import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -51,17 +54,27 @@ public interface BoardControllerSpec {
     })
     @GetMapping
     com.goormthon.backend.firstsori.global.common.response.ApiResponse<PageResponse<MessageListResponse>> getMessages(
-            @Parameter(
-                    description = "메세지를 조회할 사용자 ID",
-                    example = "fd1c199e-ae84-4cbd-9baa-e94da3d553d0"
-            )
-            @RequestParam UUID userId,
 
+            @AuthenticationPrincipal PrincipalDetails user,
             @Parameter(
                     description = "페이징 정보",
-                    example = "{ \"page\": 0, \"size\": 10, \"sort\": [\"createdDate,desc\"] }"
+                    example = "{ \"page\": 0, \"size\": 10, \"sort\": [\"desc\"] }"
             )
             Pageable pageable
     );
+
+    @Operation(
+            summary = "보드 정보 반환",
+            description = "인증된 사용자의 보드 정보(닉네임, 프로필 사진, 총 메시지 수 등)를 반환합니다. 토큰이 필요합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "보드 정보 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (토큰 부재 또는 유효하지 않은 토큰)"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
+    })
+    @GetMapping("/info")
+    com.goormthon.backend.firstsori.global.common.response.ApiResponse<BoardInfoResponse> getBoardInfo(
+            @AuthenticationPrincipal PrincipalDetails user
+            );
 
 }
