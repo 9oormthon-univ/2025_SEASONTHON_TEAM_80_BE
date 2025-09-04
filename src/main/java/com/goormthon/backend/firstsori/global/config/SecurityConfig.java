@@ -44,7 +44,6 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/message/shared/**").permitAll()
                         .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(null))
                         .permitAll()
                         .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(USER))
