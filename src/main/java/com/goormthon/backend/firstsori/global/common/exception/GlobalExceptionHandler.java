@@ -23,8 +23,9 @@ import java.util.NoSuchElementException;
 public class GlobalExceptionHandler {
 
     /// 공통 처리 메서드
-    private ApiResponse<CustomException> handleCustomException(CustomException customException) {
-        return ApiResponse.fail(customException);
+    @ExceptionHandler(CustomException.class)
+    public ApiResponse<CustomException> handleCustomException(CustomException e) {
+        return ApiResponse.fail(e); 
     }
 
     /// 예외 처리

@@ -30,9 +30,9 @@ public class GetMessageService {
 
     public Page<Message> getMessageList(UUID userId, Pageable pageable) {
         Page<Message> messages = messageRepository.findAllByUserId(userId, pageable);
-        if (messages.isEmpty()) {
-            throw new CustomException(ErrorCode.MESSAGE_NOT_FOUND);
-        }
+//        if (messages.isEmpty()) {
+//            throw new CustomException(ErrorCode.MESSAGE_NOT_FOUND);
+//        }
         return messages;
     }
 }

@@ -16,9 +16,9 @@ public class GetBoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Board getBoardBySharedId(String sharedId) {
-        return boardRepository.findBySharedId(sharedId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MESSAGE_NOT_FOUND));
+    public Board getBoardBySharedId(String shareUri) {
+        return boardRepository.findByShareUri(shareUri)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
     }
 
 }

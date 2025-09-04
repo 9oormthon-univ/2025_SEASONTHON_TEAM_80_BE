@@ -4,6 +4,7 @@ import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetail
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +17,17 @@ public interface AuthControllerSpec {
             summary = "토큰 재발급 API",
             description = "RefeshToken을 바탕으로 AccessToken을 재발급 할 수 있습니다."
     )
-    ApiResponse<Void> reissue(
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = java.lang.String.class)
+                    )
+            )
+    })
+    ApiResponse<String> reissue(
             HttpServletRequest request,
             HttpServletResponse response);
 
@@ -24,7 +35,17 @@ public interface AuthControllerSpec {
             summary = "로그아웃 API",
             description = "쿠키가 존재하고, 카카오/구글을 통해 로그인한 회원에서 가능합니다."
     )
-    ApiResponse<Void> logout(
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = java.lang.String.class)
+                    )
+            )
+    })
+    ApiResponse<String> logout(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             HttpServletRequest request,
             HttpServletResponse response);

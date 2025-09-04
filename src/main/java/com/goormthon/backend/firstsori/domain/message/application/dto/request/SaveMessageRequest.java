@@ -9,9 +9,9 @@ import lombok.Builder;
 @Builder
 @Schema(description = "메시지 저장 요청 DTO")
 public record SaveMessageRequest(
-        @Schema(description = "Board의 shared ID", example = "abcd1234")
+        @Schema(description = "Board의 shareUri", example = "abcd1234")
         @NotBlank
-        String sharedId,
+        String shareUri,
 
         @Schema(description = "닉네임", example = "홍길동", maxLength = 30)
         @NotBlank(message = "닉네임은 필수입니다.")

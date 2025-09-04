@@ -1,12 +1,14 @@
 package com.goormthon.backend.firstsori.domain.board.presentation;
 
-import com.goormthon.backend.firstsori.domain.board.application.dto.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
 import com.goormthon.backend.firstsori.domain.board.presentation.spec.BoardControllerSpec;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
 import com.goormthon.backend.firstsori.domain.message.application.usecase.MessageUseCase;
-import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
@@ -39,6 +41,25 @@ public class BoardController implements BoardControllerSpec {
             Pageable pageable) {
         PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(user.getId(), pageable);
         return ApiResponse.ok(messageListResponses);
+    }
+
+    // 보드 생성
+    @PostMapping("/create")
+    public ApiResponse<CreateBoardResponse> createBoard(
+            @RequestBody CreateBoardRequest request,
+            @AuthenticationPrincipal PrincipalDetails user
+    ) {
+        CreateBoardResponse response = boardUseCase.createBoard(request, user.getUser());
+        return ApiResponse.ok(response);
+    }
+
+    // 보드 공유 URI 조회
+    @GetMapping("/share")
+    public ApiResponse<GetShareUriResponse> getShareUri(
+            @AuthenticationPrincipal PrincipalDetails user
+    ) {
+        GetShareUriResponse response = boardUseCase.getShareUriByUser(user.getUser());
+        return ApiResponse.ok(response);
     }
 
 
