@@ -62,6 +62,14 @@ public class LocalSwaggerConfig {
                     .addProperty("message", new Schema<>().type("string").example("호출이 성공적으로 완료되었습니다.").description("응답 메시지"))
                     .addProperty("data", new Schema<>().type("object").nullable(true).description("응답 데이터"));
             
+            // ApiResponse<String> 스키마 (인증 API용)
+            Schema<?> apiResponseStringSchema = new Schema<>()
+                    .type("object")
+                    .addProperty("success", new Schema<>().type("boolean").example(true).description("성공 여부"))
+                    .addProperty("code", new Schema<>().type("integer").example(200).description("HTTP 상태 코드"))
+                    .addProperty("message", new Schema<>().type("string").example("호출이 성공적으로 완료되었습니다.").description("응답 메시지"))
+                    .addProperty("data", new Schema<>().type("string").example("재발급 완료").description("응답 데이터"));
+            
             // 에러 응답용 ApiResponse 스키마들 (실제 서버 응답 구조에 맞춤)
             Schema<?> error400Schema = new Schema<>()
                     .type("object")
@@ -89,6 +97,7 @@ public class LocalSwaggerConfig {
             
             openApi.getComponents()
                     .addSchemas("ApiResponse", successApiResponseSchema)
+                    .addSchemas("ApiResponseString", apiResponseStringSchema)
                     .addSchemas("ApiResponse400", error400Schema)
                     .addSchemas("ApiResponse401", error401Schema)
                     .addSchemas("ApiResponse404", error404Schema)
