@@ -16,6 +16,7 @@ import java.util.UUID;
  @Table(name = "boards")
  @AllArgsConstructor
  @Builder
+ @org.hibernate.annotations.DynamicUpdate
  public class Board extends BaseTimeEntity {
 
      @Id
