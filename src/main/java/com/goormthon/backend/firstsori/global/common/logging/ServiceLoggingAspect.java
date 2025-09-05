@@ -16,9 +16,8 @@ import java.util.Arrays;
 @Slf4j
 public class ServiceLoggingAspect {
 
-    @Pointcut("execution(* com.goormthon.backend.firstsori..service..*(..))")
-    private void applicationLayer() {
-    }
+    @Pointcut("execution(* com.goormthon.backend.firstsori..service..*(..)) && !within(com.goormthon.backend.firstsori.domain.music.domain.service.MusicEventConsumer)")
+    private void applicationLayer() {}
 
     @Before("applicationLayer()")
     public void logMethodEntry(JoinPoint joinPoint) {
