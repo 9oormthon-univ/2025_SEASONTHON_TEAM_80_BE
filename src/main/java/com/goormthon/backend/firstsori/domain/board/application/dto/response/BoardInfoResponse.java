@@ -3,6 +3,8 @@ package com.goormthon.backend.firstsori.domain.board.application.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
+
 // 보드 정보 응답 DTO
 @Builder
 @Schema(description = "보드 정보 및 소유자 프로필 응답")
@@ -14,5 +16,11 @@ public record BoardInfoResponse(
         String profileImage,
 
         @Schema(description = "보드에 등록된 메시지 수")
-        Integer messageCount) {
+        Integer messageCount,
+
+        @Schema(description="서버 시간")
+        LocalDateTime serverTime
+
+) {
 }
+

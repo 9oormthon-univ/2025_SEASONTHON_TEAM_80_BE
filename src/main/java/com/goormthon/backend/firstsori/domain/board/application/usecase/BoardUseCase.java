@@ -14,6 +14,6 @@ public interface BoardUseCase {
 
     GetShareUriResponse getShareUriByUser(User user);
 
-    BoardInfoResponse getBoardInfo(UUID userId);
+    BoardInfoResponse getBoardInfo(String shareUri);
 
 }
