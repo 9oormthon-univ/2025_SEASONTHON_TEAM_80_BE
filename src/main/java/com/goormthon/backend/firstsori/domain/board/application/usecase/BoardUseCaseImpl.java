@@ -97,7 +97,14 @@ public class BoardUseCaseImpl implements BoardUseCase {
     public GetShareUriResponse getShareUriByUser(User user) {
 
         Board board = boardRepository.findByUser(user)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+                .orElse(null);
+
+        if (board == null) {
+            return GetShareUriResponse.builder()
+                    .boardId(null)
+                    .shareUri(null)
+                    .build();
+        }
 
         return GetShareUriResponse.builder()
                 .boardId(board.getBoardId())
