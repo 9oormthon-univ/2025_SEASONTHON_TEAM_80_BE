@@ -81,16 +81,15 @@ public class MessageUseCaseImpl implements MessageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardPreviewResponse> getMessagesByBoardShareUri(String shareUri) {
-        Board board = getBoardService.getBoardBySharedId(shareUri); // Board 조회
+    @Override
+    public PageResponse<BoardPreviewResponse> getMessagesByBoardShareUri(String shareUri, Pageable pageable) {
+        Board board = Optional.ofNullable(getBoardService.getBoardBySharedId(shareUri))
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        return board.getMessages().stream()
-                .map(message -> BoardPreviewResponse.builder()
-                        .messageId(message.getMessageId())
-                        .musicId(message.getMusic().getMusicId())  // Music ID
-                        .musicCoverUrl(message.getMusic().getAlbumImageUrl())  // Music Cover
-                        .build())
-                .toList();
+
+        Page<Message> messages = getMessageService.getMessageList(board.getUser().getUserId(), pageable);
+
+        return MessageMapper.toBoardPreviewPageResponse(messages);
     }
 
 }

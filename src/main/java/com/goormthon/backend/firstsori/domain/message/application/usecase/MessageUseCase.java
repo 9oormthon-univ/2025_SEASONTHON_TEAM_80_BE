@@ -7,7 +7,6 @@ import com.goormthon.backend.firstsori.domain.message.application.dto.response.M
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface MessageUseCase {
@@ -18,6 +17,6 @@ public interface MessageUseCase {
 
     void createMessage(SaveMessageRequest request);
 
-    List<BoardPreviewResponse> getMessagesByBoardShareUri(String shareUri);
+    PageResponse<BoardPreviewResponse> getMessagesByBoardShareUri(String shareUri, Pageable pageable);
 
 }
