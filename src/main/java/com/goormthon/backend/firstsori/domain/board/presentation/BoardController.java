@@ -73,9 +73,9 @@ public class BoardController implements BoardControllerSpec {
 
 
     // 보드 정보 반환
-    @GetMapping("/info")
-    public ApiResponse<BoardInfoResponse> getBoardInfo(@AuthenticationPrincipal PrincipalDetails user) {
-        BoardInfoResponse boardInfo=boardUseCase.getBoardInfo(user.getId());
+    @GetMapping("/info/{sharedUri}")
+    public ApiResponse<BoardInfoResponse> getBoardInfo(@PathVariable String sharedUri) {
+        BoardInfoResponse boardInfo=boardUseCase.getBoardInfo(sharedUri);
         return ApiResponse.ok(boardInfo);
     }
 

@@ -78,7 +78,7 @@ public interface BoardControllerSpec {
     })
     @GetMapping("/info")
     com.goormthon.backend.firstsori.global.common.response.ApiResponse<BoardInfoResponse> getBoardInfo(
-            @AuthenticationPrincipal PrincipalDetails user
+            @PathVariable String shareUri
     );
 
     @Operation(

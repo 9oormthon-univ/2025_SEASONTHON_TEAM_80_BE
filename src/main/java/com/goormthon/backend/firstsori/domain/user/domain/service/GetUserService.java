@@ -22,4 +22,5 @@ public class GetUserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+
 }

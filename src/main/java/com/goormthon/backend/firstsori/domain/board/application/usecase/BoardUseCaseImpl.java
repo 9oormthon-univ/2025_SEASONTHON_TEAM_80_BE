@@ -7,6 +7,7 @@ import com.goormthon.backend.firstsori.domain.board.application.dto.response.Boa
 import com.goormthon.backend.firstsori.domain.board.application.mapper.BoardMapper;
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
+import com.goormthon.backend.firstsori.domain.board.domain.service.GetBoardService;
 import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenExtractor;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +33,7 @@ public class BoardUseCaseImpl implements BoardUseCase {
     private final UserUseCase userUseCase;
     private final JwtTokenExtractor jwtTokenExtractor;
     private final GetUserService getUserService;
+    private final GetBoardService getBoardService;
 
     @Transactional
     @Override
@@ -100,13 +103,10 @@ public class BoardUseCaseImpl implements BoardUseCase {
 
     @Transactional(readOnly = true)
     @Override
-    public BoardInfoResponse getBoardInfo(UUID userId) {
-        User user = Optional.ofNullable(getUserService.validateUserExists(userId))
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        // 보드랑 연결후에 작동 (혜연님 코드)
-        Board board = Optional.ofNullable(user.getBoard())
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-        return BoardMapper.toBoardInfoResponse(user.getName(), user.getProfileImage(), board.getMessageCount());
+    public BoardInfoResponse getBoardInfo(String shareUri) {
+        Board board = getBoardService.getBoardBySharedId(shareUri);
+
+        return BoardMapper.toBoardInfoResponse(board.getNickname(), board.getUser().getProfileImage(), board.getMessageCount());
     }
 
 }
