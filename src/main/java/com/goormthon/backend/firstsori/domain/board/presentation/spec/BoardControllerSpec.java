@@ -169,11 +169,11 @@ public interface BoardControllerSpec {
     );
 
     @Operation(
-            summary = "보드 수정",
+            summary = "프로필 수정",
             description = "JWT 토큰으로 인증된 사용자의 보드 닉네임과 프로필 이미지를 수정합니다."
     )
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "보드 수정 성공",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "프로필 수정 성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(
