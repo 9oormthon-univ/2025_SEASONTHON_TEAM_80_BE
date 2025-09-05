@@ -25,7 +25,7 @@ import java.util.Objects;
 @Slf4j
 public class ControllerLoggingAspect {
 
-    @Pointcut("execution(* com.goormthon.backend.firstsori..*Controller.*(..))")
+    @Pointcut("execution(* com.goormthon.backend.firstsori..*Controller.*(..)) && !within(com.goormthon.backend.firstsori.domain.music.domain.service.MusicEventConsumer)")
     private void controllerPointcut() {}
 
     @Before("controllerPointcut()")
