@@ -1,9 +1,11 @@
 package com.goormthon.backend.firstsori.domain.board.application.usecase;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.UpdateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 
 import java.util.UUID;
@@ -15,5 +17,7 @@ public interface BoardUseCase {
     GetShareUriResponse getShareUriByUser(User user);
 
     BoardInfoResponse getBoardInfo(UUID userId);
+
+    UpdateBoardResponse updateBoard(UpdateBoardRequest request, User user);
 
 }

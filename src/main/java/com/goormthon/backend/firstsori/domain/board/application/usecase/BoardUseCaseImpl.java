@@ -1,14 +1,17 @@
 package com.goormthon.backend.firstsori.domain.board.application.usecase;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.UpdateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.mapper.BoardMapper;
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
 import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
+import com.goormthon.backend.firstsori.domain.user.domain.repository.UserRepository;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenExtractor;
 import com.goormthon.backend.firstsori.domain.user.domain.service.GetUserService;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
@@ -28,6 +31,7 @@ import java.util.UUID;
 public class BoardUseCaseImpl implements BoardUseCase {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
     private final UserUseCase userUseCase;
     private final JwtTokenExtractor jwtTokenExtractor;
     private final GetUserService getUserService;
@@ -107,6 +111,37 @@ public class BoardUseCaseImpl implements BoardUseCase {
         Board board = Optional.ofNullable(user.getBoard())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
         return BoardMapper.toBoardInfoResponse(user.getName(), user.getProfileImage(), board.getMessageCount());
+    }
+
+    @Transactional
+    @Override
+    public UpdateBoardResponse updateBoard(UpdateBoardRequest request, User user) {
+        // 사용자의 보드 조회
+        Board board = boardRepository.findByUser(user)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        // 보드 닉네임 업데이트
+        if (request.getNickname() != null && !request.getNickname().isBlank()) {
+            board.updateNickname(request.getNickname());
+        }
+
+        // 사용자 프로필 이미지 업데이트
+        User savedUser = user;
+        if (request.getProfileImage() != null) {
+            user.update(null, null, request.getProfileImage());
+            savedUser = userRepository.save(user); // User 변경사항 저장
+        }
+
+        // 변경사항 저장
+        Board savedBoard = boardRepository.save(board);
+
+        return UpdateBoardResponse.builder()
+                .boardId(savedBoard.getBoardId())
+                .userId(savedUser.getUserId())
+                .nickname(savedBoard.getNickname())
+                .profileImage(savedUser.getProfileImage())
+                .shareUri(savedBoard.getShareUri())
+                .build();
     }
 
 }
