@@ -2,6 +2,7 @@ package com.goormthon.backend.firstsori.domain.board.presentation.spec;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.UpdateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
@@ -136,8 +137,8 @@ public interface BoardControllerSpec {
             );
 
     @Operation(
-            summary = "외부 사용자 보드 메세지 조회",
-            description = "공유 URI를 통해 외부 사용자가 접근할 때, 해당 보드의 전체 메세지 앨범 커버 정보를 조회합니다."
+            summary = "외부 사용자가 보드 메세지 조회",
+            description = "공유 URI를 통해 외부 사용자가 접근할 때, 해당 보드의 전체 메시지 앨범 커버 정보를 페이지네이션과 함께 조회합니다."
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -145,10 +146,8 @@ public interface BoardControllerSpec {
                     description = "OK",
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
-                            array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                    schema = @io.swagger.v3.oas.annotations.media.Schema(
-                                            implementation = com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse.class
-                                    )
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(
+                                    implementation = com.goormthon.backend.firstsori.global.common.response.page.PageResponse.class
                             )
                     )
             ),
@@ -159,13 +158,18 @@ public interface BoardControllerSpec {
     })
     @GetMapping("/shared/{shareUri}")
     com.goormthon.backend.firstsori.global.common.response.ApiResponse<
-            java.util.List<com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse>
-            > getBoardMessages(
+            PageResponse<BoardPreviewResponse>
+            > getMessagesFromNonOwner(
             @Parameter(
                     description = "공유 URI",
                     example = "a1b2c3d4e5f6"
             )
-            @PathVariable String shareUri
+            @PathVariable String shareUri,
+            @Parameter(
+                    description = "페이지 정보 (page, size, sort)",
+                    example = "{ \"page\": 0, \"size\": 10, \"sort\": [\"desc\"] }"
+            )
+            Pageable pageable
     );
 
     @Operation(

@@ -1,5 +1,6 @@
 package com.goormthon.backend.firstsori.domain.message.application.mapper;
 
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse;
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.message.application.dto.request.SaveMessageRequest;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
@@ -79,6 +80,28 @@ public class MessageMapper {
                 .music(music)
                 .read(false)
                 .customImageUrl(null)
+                .build();
+    }
+
+    public static BoardPreviewResponse toBoardPreviewResponse(Message message) {
+        return BoardPreviewResponse.builder()
+                .messageId(message.getMessageId())
+                .musicId(message.getMusic().getMusicId())
+                .musicCoverUrl(message.getMusic().getAlbumImageUrl())
+                .build();
+    }
+
+    public static PageResponse<BoardPreviewResponse> toBoardPreviewPageResponse(Page<Message> messages) {
+        List<BoardPreviewResponse> content = messages.stream()
+                .map(MessageMapper::toBoardPreviewResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<BoardPreviewResponse>builder()
+                .content(content)
+                .pageNumber(messages.getNumber())
+                .pageSize(messages.getSize())
+                .totalElements(messages.getTotalElements())
+                .totalPages(messages.getTotalPages())
                 .build();
     }
 
