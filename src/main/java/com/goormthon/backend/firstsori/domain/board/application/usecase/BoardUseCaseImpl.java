@@ -120,25 +120,30 @@ public class BoardUseCaseImpl implements BoardUseCase {
         Board board = boardRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        // 보드 닉네임 업데이트
-        if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            board.updateNickname(request.getNickname());
-        }
-
-        // 사용자 프로필 이미지 업데이트
+        // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
         User savedUser = user;
         if (request.getProfileImage() != null) {
             user.update(null, null, request.getProfileImage());
-            savedUser = userRepository.save(user); // User 변경사항 저장
+            savedUser = userRepository.saveAndFlush(user);
         }
 
-        // 변경사항 저장
-        Board savedBoard = boardRepository.save(board);
+        // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
+        if (request.getNickname() != null && !request.getNickname().isBlank()) {
+            boardRepository.updateNicknameByUser(user, request.getNickname());
+        }
+
+        // 3) 최신 보드 재조회하여 최신 값으로 응답
+        Board savedBoard = boardRepository.findByUser(savedUser)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        // 응답 닉네임은 요청값 우선(부분 업데이트 시 최신 값 확정)
+        String responseNickname = (request.getNickname() != null && !request.getNickname().isBlank())
+                ? request.getNickname() : savedBoard.getNickname();
 
         return UpdateBoardResponse.builder()
                 .boardId(savedBoard.getBoardId())
                 .userId(savedUser.getUserId())
-                .nickname(savedBoard.getNickname())
+                .nickname(responseNickname)
                 .profileImage(savedUser.getProfileImage())
                 .shareUri(savedBoard.getShareUri())
                 .build();

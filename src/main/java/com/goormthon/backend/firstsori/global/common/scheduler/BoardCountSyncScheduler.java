@@ -35,13 +35,11 @@ public class BoardCountSyncScheduler {
             if (countString != null) {
                 Integer redisCount = Integer.parseInt(countString);
 
-                // DB의 기존 카운트에 Redis 카운트 값을 더함
-                board.incrementMessageCount(redisCount);
-                boardRepository.save(board);
+                // 변경 컬럼만 업데이트(닉네임 등 다른 컬럼을 덮어쓰지 않도록 함)
+                boardRepository.incrementMessageCountById(board.getBoardId(), redisCount);
 
                 // Redis 카운트 초기화
-                redisTemplate.delete(redisKey); //  redisTemplate.opsForValue().set(redisKey, "0");
-//                log.info("Board ID: {}에 {}개의 메시지 카운트 동기화 완료.", board.getBoardId(), redisCount);
+                redisTemplate.delete(redisKey);
             }
         }
 //        log.info("[스케줄러 종료] Board 메시지 카운트 동기화 완료.");
