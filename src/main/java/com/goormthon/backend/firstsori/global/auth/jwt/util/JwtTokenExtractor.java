@@ -1,7 +1,7 @@
 package com.goormthon.backend.firstsori.global.auth.jwt.util;
 
+import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
-import com.goormthon.backend.firstsori.domain.user.domain.entity.UserPort;
 import com.goormthon.backend.firstsori.global.auth.jwt.exception.JwtAuthenticationException;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
@@ -35,7 +35,7 @@ public class JwtTokenExtractor {
     private SecretKey secretKey;
 
     /// 의존성
-    private final UserPort userPort;
+    private final UserUseCase userUseCase;
     private final CookieUtil cookieUtil;
 
 
@@ -109,7 +109,7 @@ public class JwtTokenExtractor {
         UUID userId = UUID.fromString(claimUserId);
 
         // 해당 userId로 Member를 조회
-        User user = userPort.loadUserById(userId)
+        User user = userUseCase.loadUserById(userId)
                 .orElseThrow(() -> new JwtAuthenticationException(ErrorCode.USER_NOT_FOUND_IN_COOKIE.getMessage()));
 
         PrincipalDetails details = PrincipalDetails.of(user);
