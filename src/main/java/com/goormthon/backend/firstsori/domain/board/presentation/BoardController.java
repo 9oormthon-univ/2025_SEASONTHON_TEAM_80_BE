@@ -2,9 +2,11 @@ package com.goormthon.backend.firstsori.domain.board.presentation;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.UpdateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardPreviewResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.CreateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
 import com.goormthon.backend.firstsori.domain.board.presentation.spec.BoardControllerSpec;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
@@ -77,6 +79,16 @@ public class BoardController implements BoardControllerSpec {
     public ApiResponse<BoardInfoResponse> getBoardInfo(@PathVariable String sharedUri) {
         BoardInfoResponse boardInfo=boardUseCase.getBoardInfo(sharedUri);
         return ApiResponse.ok(boardInfo);
+    }
+
+    // 보드 수정 (닉네임, 프로필 이미지)
+    @PatchMapping("/update")
+    public ApiResponse<UpdateBoardResponse> updateBoard(
+            @RequestBody UpdateBoardRequest request,
+            @AuthenticationPrincipal PrincipalDetails user
+    ) {
+        UpdateBoardResponse response = boardUseCase.updateBoard(request, user.getUser());
+        return ApiResponse.ok(response);
     }
 
 }

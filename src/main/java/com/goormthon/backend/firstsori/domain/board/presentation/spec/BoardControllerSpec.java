@@ -1,6 +1,8 @@
 package com.goormthon.backend.firstsori.domain.board.presentation.spec;
 
+import com.goormthon.backend.firstsori.domain.board.application.dto.request.UpdateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.BoardInfoResponse;
+import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -165,5 +168,26 @@ public interface BoardControllerSpec {
             @PathVariable String shareUri
     );
 
+    @Operation(
+            summary = "프로필 수정",
+            description = "JWT 토큰으로 인증된 사용자의 보드 닉네임과 프로필 이미지를 수정합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "프로필 수정 성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(
+                                    implementation = com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse.class
+                            )
+                    )),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "유효하지 않은 입력"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패 (토큰 부재 또는 유효하지 않은 토큰)"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "보드를 찾을 수 없음")
+    })
+    @PatchMapping("/update")
+    com.goormthon.backend.firstsori.global.common.response.ApiResponse<UpdateBoardResponse> updateBoard(
+            @RequestBody UpdateBoardRequest request,
+            @AuthenticationPrincipal PrincipalDetails user
+    );
 
 }
