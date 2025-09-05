@@ -23,7 +23,7 @@ public interface AuthControllerSpec {
                     description = "OK",
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
-                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = java.lang.String.class)
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "#/components/schemas/ApiResponseString")
                     )
             )
     })
@@ -41,7 +41,7 @@ public interface AuthControllerSpec {
                     description = "OK",
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
-                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = java.lang.String.class)
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "#/components/schemas/ApiResponseString")
                     )
             )
     })
