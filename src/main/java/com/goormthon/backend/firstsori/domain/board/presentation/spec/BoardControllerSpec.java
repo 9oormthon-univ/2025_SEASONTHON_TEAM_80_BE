@@ -156,7 +156,7 @@ public interface BoardControllerSpec {
                     description = "공유 URI에 해당하는 보드를 찾을 수 없음"
             )
     })
-    @GetMapping("/shared/{shareUri}")
+    @GetMapping("/share/{shareUri}")
     com.goormthon.backend.firstsori.global.common.response.ApiResponse<
             PageResponse<BoardPreviewResponse>
             > getMessagesFromNonOwner(

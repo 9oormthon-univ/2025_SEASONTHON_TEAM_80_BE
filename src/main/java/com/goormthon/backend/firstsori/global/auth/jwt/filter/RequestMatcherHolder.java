@@ -38,7 +38,7 @@ public class RequestMatcherHolder {
             new RequestInfo(POST, "/api/v1/message", null),
 
             // board shared
-            new RequestInfo(GET, "/api/v1/board/shared/**", null),
+            new RequestInfo(GET, "/api/v1/board/share/**", null),
 
             // static resources
             new RequestInfo(GET, "/docs/**", null),

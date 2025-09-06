@@ -48,7 +48,7 @@ public class BoardController implements BoardControllerSpec {
     }
 
     // 외부인 접속 시 전체 메세지 앨범 커버만 조회
-    @GetMapping("/shared/{shareUri}")
+    @GetMapping("/share/{shareUri}")
     public ApiResponse<PageResponse<BoardPreviewResponse>> getMessagesFromNonOwner(
             @PathVariable String shareUri,
             Pageable pageable) {
@@ -77,9 +77,9 @@ public class BoardController implements BoardControllerSpec {
 
 
     // 보드 정보 반환
-    @GetMapping("/info/{sharedUri}")
-    public ApiResponse<BoardInfoResponse> getBoardInfo(@PathVariable String sharedUri) {
-        BoardInfoResponse boardInfo=boardUseCase.getBoardInfo(sharedUri);
+    @GetMapping("/info/{shareUri}")
+    public ApiResponse<BoardInfoResponse> getBoardInfo(@PathVariable String shareUri) {
+        BoardInfoResponse boardInfo=boardUseCase.getBoardInfo(shareUri);
         return ApiResponse.ok(boardInfo);
     }
 
