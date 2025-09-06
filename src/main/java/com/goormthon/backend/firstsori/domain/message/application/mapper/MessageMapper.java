@@ -31,7 +31,9 @@ public class MessageMapper {
                         message.getCustomImageUrl() != null
                                 ? message.getCustomImageUrl()
                                 : message.getMusic().getAlbumImageUrl()
-                ).build();
+                )
+                .songUrl(message.getMusic().getSongUrl())
+                .build();
     }
 
     public static PageResponse<MessageListResponse> toMessageListResponse(Page<Message> messages) {
