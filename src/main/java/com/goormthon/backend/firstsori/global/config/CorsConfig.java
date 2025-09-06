@@ -29,6 +29,7 @@ public class CorsConfig {
         configuration.addAllowedOriginPattern(frontHost);
         configuration.addAllowedOriginPattern(frontProd);
         configuration.addAllowedOriginPattern(backProd);
+        configuration.addAllowedOriginPattern("http://localhost:5173");
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
