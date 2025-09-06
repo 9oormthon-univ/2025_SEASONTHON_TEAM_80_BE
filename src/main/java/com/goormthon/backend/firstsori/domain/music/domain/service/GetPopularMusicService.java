@@ -26,25 +26,25 @@ public class GetPopularMusicService {
      */
     public List<MusicChartResponse> getPopularMusic(int topN) {
         Set<ZSetOperations.TypedTuple<String>> topMusic = redisTemplate.opsForZSet()
-                .reverseRangeWithScores(POPULAR_MUSIC_KEY, 0, -1);   // ZSet에서 점수가 높은 순으로 모든 곡과 점수 조회
+                .reverseRangeWithScores(POPULAR_MUSIC_KEY, 0, topN - 1);  // 상위 topN개만 조회
 
         if (topMusic == null || topMusic.isEmpty()) return Collections.emptyList();
 
         Map<String, MusicChartResponse> chartMap = new HashMap<>();
         for (ZSetOperations.TypedTuple<String> tuple : topMusic) {
             String songName = tuple.getValue();
-            if (songName == null || songName.isBlank()) continue;
+            Double score = tuple.getScore();
 
-            List<Music> musicList = musicRepository.findBySongName(songName);  // DB에서 songName으로 음악 정보 리스트 조회
+            if (songName == null || songName.isBlank() || score == null) continue;
+
+            List<Music> musicList = musicRepository.findBySongName(songName);
             if (!musicList.isEmpty()) {
-
-                // 각 음악을 응답 객체로 변환 후 맵에 저장, 이미 있으면 점수(score)를 누적
                 for (Music music : musicList) {
                     chartMap.compute(songName, (k, existing) -> {
                         if (existing == null) {
-                            return MusicMapper.toMusicChartResponse(music, 1); // 1점씩 시작
+                            return MusicMapper.toMusicChartResponse(music, score); // Redis 점수로 초기화
                         } else {
-                            existing.setScore(existing.getScore() + 1); // 1점씩 누적
+                            existing.setScore(existing.getScore() + score); // 누적 점수 업데이트 (필요 시)
                             return existing;
                         }
                     });
@@ -52,9 +52,9 @@ public class GetPopularMusicService {
             }
         }
 
-        // 점수 내림차순으로 정렬 후 상위 topN 개만 리스트로 반환
+
         return chartMap.values().stream()
-                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore())) // 점수 내림차순 정렬
                 .limit(topN)
                 .toList();
     }

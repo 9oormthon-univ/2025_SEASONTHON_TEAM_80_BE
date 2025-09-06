@@ -69,10 +69,10 @@ public class MessageUseCaseImpl implements MessageUseCase {
 
         // 음악 정보 엔티티 생성
         Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.albumImageUrl(), request.songUrl());
-        saveMusicService.saveMusic(music);
+        Music persistedMusic=saveMusicService.saveMusic(music);
 
         // 메시지 엔티티 생성
-        Message message = MessageMapper.toMessageEntity(request, board, music);
+        Message message = MessageMapper.toMessageEntity(request, board, persistedMusic);
         saveMessageService.saveMessage(message);
 
         // 보드의 메시지 카운트를 Redis에서 증가

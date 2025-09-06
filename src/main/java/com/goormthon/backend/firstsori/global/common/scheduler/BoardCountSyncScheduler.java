@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,26 +24,29 @@ public class BoardCountSyncScheduler {
      * 30초마다 실행됩니다.
      */
     @Scheduled(fixedDelay = 30000)
+    @Transactional
     public void syncBoardMessageCounts() {
-//        log.info("[스케줄러 실행] Board 메시지 카운트 동기화 시작"); // 시작 로그
 
         List<Board> allBoards = boardRepository.findAll();
 
         for (Board board : allBoards) {
             String redisKey = "board:messageCount:" + board.getBoardId().toString();
-            String countString = redisTemplate.opsForValue().get(redisKey);        // Redis에서 현재 카운트 값을 가져옴
+            try {
+                // Redis에서 원자적으로 값을 읽고 0으로 초기화
+                String countString = redisTemplate.opsForValue().getAndSet(redisKey, "0");
 
-            if (countString != null) {
-                Integer redisCount = Integer.parseInt(countString);
+                if (countString != null) {
+                    Integer redisCount = Integer.parseInt(countString);
 
-                // 변경 컬럼만 업데이트(닉네임 등 다른 컬럼을 덮어쓰지 않도록 함)
-                boardRepository.incrementMessageCountById(board.getBoardId(), redisCount);
-
-                // Redis 카운트 초기화
-                redisTemplate.delete(redisKey);
+                    if (redisCount > 0) {
+                        // DB에 메시지 카운트 증분 반영
+                        boardRepository.incrementMessageCountById(board.getBoardId(), redisCount);
+                    }
+                }
+            } catch (Exception e) {
+                // 예외 발생 시 Redis 키는 삭제하지 않고 로그에 기록만 함
+//                log.error("Board ID: {} 동기화 중 오류 발생 - Redis 카운트 유지", board.getBoardId(), e);
             }
         }
-//        log.info("[스케줄러 종료] Board 메시지 카운트 동기화 완료.");
-
     }
 }
